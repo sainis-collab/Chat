@@ -8,7 +8,7 @@ var messageInput = document.querySelector("#message");
 var messageArea = document.querySelector("#messageArea");
 var connectingElement = document.querySelector(".connecting");
 
-var stopmClient = null;
+var stompClient = null;
 var username = null;
 var color = ['#2196F3', '#32c787', '#00BCD4', '#ff5652', '#ffc107', '#ff85af', '#FF9800', '#39bbb0'];
 
@@ -20,16 +20,16 @@ function connect(event){
 
         // FIX 1: Corrected class names 'SockJS' and library reference 'Stomp'
         var socket = new SockJS('/ws');
-        stopmClient = Stomp.over(socket);
-        stopmClient.connect({}, onConnected, onerror);
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onerror);
     }
     event.preventDefault();
 }
 
 function onConnected(){
-    stopmClient.subscribe('/topic/public', onMessageRecieved);
+    stompClient.subscribe('/topic/public', onMessageRecieved);
     // FIX 2: Changed 'JASON' to 'JSON' and type to uppercase 'JOIN' to match Java logic
-    stopmClient.send('/app/chat.addUser', {}, JSON.stringify({sender: username, type: 'JOIN'}));
+    stompClient.send('/app/chat.addUser', {}, JSON.stringify({sender: username, type: 'JOIN'}));
     connectingElement.classList.add('hidden');
 }
 
@@ -86,7 +86,7 @@ function sendmessage(event) {
             type: 'CHAT' // FIX 5: Standardized payload to match expected Java enum mapping
         };
         // FIX 2: Changed 'JASON' to 'JSON' and endpoint to match ChatController mapping
-        stopmClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
+        stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
 
         // FIX 4: Correctly clears out the message field value
         messageInput.value = '';
