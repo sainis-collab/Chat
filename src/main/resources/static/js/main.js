@@ -79,16 +79,17 @@ function onMessageRecieved(payload){
 
 function sendmessage(event) {
     var messageContent = messageInput.value.trim();
-    if(messageContent && stopmClient){
+
+    // Fixed the typo here: changed 'stopmClient' to 'stompClient'
+    if(messageContent && stompClient){
         var chatMessage = {
             sender: username,
             content: messageContent,
-            type: 'CHAT' // FIX 5: Standardized payload to match expected Java enum mapping
+            type: 'CHAT'
         };
-        // FIX 2: Changed 'JASON' to 'JSON' and endpoint to match ChatController mapping
+
         stompClient.send('/app/chat.sendMessage', {}, JSON.stringify(chatMessage));
 
-        // FIX 4: Correctly clears out the message field value
         messageInput.value = '';
     }
 
